@@ -19,10 +19,12 @@
   </div>
 </template>
 
-<script>
-import { defineComponent } from 'vue';
-import { ElForm, ElFormItem, ElInput, ElButton } from 'element-plus';
+<script lang="ts">
+import {defineComponent} from 'vue';
+import {ElForm, ElFormItem, ElInput, ElButton,} from 'element-plus';
 import axios from "axios";
+import MyComponent from "../utils/Login";
+
 export default defineComponent({
   components: {
     ElForm,
@@ -37,14 +39,14 @@ export default defineComponent({
         password: '',
       },
       rules: {
-        username: [{ required: true, message: '请输入用户名', trigger: 'blur' }],
-        password: [{ required: true, message: '请输入密码', trigger: 'blur' }],
+        username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
+        password: [{required: true, message: '请输入密码', trigger: 'blur'}],
       },
     };
   },
   methods: {
     handleLogin() {
-      this.$refs.form.validate(valid => {
+      (this.$refs.form as any).validate((valid: boolean) => {
         if (valid) {
           const url = 'http://localhost:8088/noUser/login';
           const params = {
@@ -54,17 +56,17 @@ export default defineComponent({
           axios.post(url, params)
               .then(res => {
                 console.log(res.data.code)
-            if (res.data.code === "200") {
-              this.$message.success(res.data.message);
-              const token = res.data.user.noId
-              sessionStorage.setItem('token', token)
-              this.$router.push('/');
-            } else {
-              this.$message.error(res.data.message);
-            }
-          });
+                if (res.data.code === 200) {
+                  (this as unknown as MyComponent).$message.success(res.data.message);
+                  const token = res.data.user.noId
+                  sessionStorage.setItem('token', token)
+                  this.$router.push('/');
+                } else {
+                  (this as unknown as MyComponent).$message.error(res.data.message);
+                }
+              });
         }
-      });
+      })
     },
   },
 });
@@ -72,11 +74,13 @@ export default defineComponent({
 
 <style scoped>
 .login-container {
+  padding-top: 20px;
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100%;
   background-color: #f7f7f7;
+  margin: auto;
 }
 
 .login-box {
