@@ -14,17 +14,24 @@ axios.post('http://localhost:8088/noUser/queAllArt', {}, {responseType: 'json'})
     }).catch(error => {
   console.log(error);
 });
+
 function addArticle() {
   router.push({name: 'addArticle'})
 }
+
+const normalUser = JSON.parse(sessionStorage.getItem('token') || '{}')
+const user = normalUser.noUsername
+console.log(articles)
 </script>
 <template>
   <el-main>
     <el-container>
       <!-- 文章列表组件 -->
+      <div><h3>目前用户为：{{ user }}</h3></div>
+      <br>
       <h2>文章列表</h2>
       <ul>
-        <li v-for="(article, index) in articles" :key="index">
+        <li v-for="(article, index) in toRaw(articleStore.articleList)" :key="index">
           <router-link :to="{name: 'article', params: {id: article.arId}}">
             {{ article.arTitle }} ({{ article.arTime }})
           </router-link>
@@ -48,3 +55,4 @@ function addArticle() {
     </el-container>
   </el-main>
 </template>
+

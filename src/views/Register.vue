@@ -1,7 +1,9 @@
 <script lang="ts" setup>
 import {reactive} from "vue";
 import axios from "axios";
-import MyComponent from "../utils/Login";
+import {ElMessage} from "element-plus";
+import router from "../router";
+
 
 const form = reactive({
   noUsername: '',
@@ -10,27 +12,30 @@ const form = reactive({
   noBirthday: '',
   noEmail: ''
 })
+
 function submitForm(form: any) {
-  const url = 'http://localhost:8088/noUser/register';
-  const params = {
+  const url = 'http://localhost:8088/noUser/signIn';
+  const noBirthday = new Date().setTime(form.noBirthday)
+  console.log(typeof noBirthday)
+
+  axios.post(url,{
     noUsername: form.noUsername,
     noUserPassword: form.noUserPassword,
     noGender: form.noGender,
-    noBirthday: form.noBirthday,
+    noBirthday: noBirthday,
     noEmail: form.noEmail
-  };
-  // axios.post(url, params)
-  //     .then(res => {
-  //       console.log(res.data.code)
-  //       if (res.data.code === 200) {
-  //         (this as unknown as MyComponent).$message.success(res.data.message);
-  //         const token = res.data.user.noId
-  //         sessionStorage.setItem('token', token)
-  //         this.$router.push('/');
-  //       } else {
-  //         (this as unknown as MyComponent).$message.error(res.data.message);
-  //       }
-  //     });
+  }, {responseType: "json"})
+      .then(res => {
+            console.log(res.data.code)
+            if (res.data.code === 200) {
+              ElMessage.success(res.data.message);
+              router.push('/');
+            } else {
+              ElMessage.error(res.data.message);
+            }
+          }
+      )
+
 }
 </script>
 <template>

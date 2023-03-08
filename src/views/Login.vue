@@ -24,6 +24,7 @@ import {defineComponent} from 'vue';
 import {ElForm, ElFormItem, ElInput, ElButton,} from 'element-plus';
 import axios from "axios";
 import MyComponent from "../utils/Login";
+import router from "../router";
 
 export default defineComponent({
   components: {
@@ -58,9 +59,10 @@ export default defineComponent({
                 console.log(res.data.code)
                 if (res.data.code === 200) {
                   (this as unknown as MyComponent).$message.success(res.data.message);
-                  const token = res.data.user.noId
-                  sessionStorage.setItem('token', token)
-                  this.$router.push('/');
+                  const token = res.data.user
+                  const tokenStr = JSON.stringify(token)
+                  sessionStorage.setItem('token', tokenStr)
+                  router.push('/');
                 } else {
                   (this as unknown as MyComponent).$message.error(res.data.message);
                 }

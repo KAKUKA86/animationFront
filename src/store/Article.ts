@@ -2,9 +2,14 @@ import {defineStore} from "pinia";
 
 interface articleInfo {
     arId: number,
+    noId: number,
+    paId: number,
     arTitle: string,
     arContent: string,
     arTime: Date,
+    arView: number,
+    arStatus: number
+    auId: number
 }
 
 interface State {

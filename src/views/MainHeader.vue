@@ -32,6 +32,9 @@
       <el-menu-item index="4">
         <router-link to="/login">登录</router-link>
       </el-menu-item>
+      <el-menu-item index="5">
+        <router-link to="/center">个人中心</router-link>
+      </el-menu-item>
     </el-menu>
     <!-- 页面标题或导航栏等 -->
   </el-header>
