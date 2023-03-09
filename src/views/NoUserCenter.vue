@@ -2,6 +2,7 @@
 import MyArticle from "./UserCenter/MyArticle.vue";
 import MyComment from "./UserCenter/MyComment.vue";
 import MyFavorite from "./UserCenter/MyFavorite.vue";
+import MyAccount from "./UserCenter/MyAccount.vue";
 
 import {
   Document,
@@ -10,6 +11,7 @@ import {
   Setting,
 } from '@element-plus/icons-vue'
 import {reactive, ref} from "vue";
+import router from "../router";
 
 
 const handleOpen = (key: string, keyPath: string[]) => {
@@ -22,11 +24,16 @@ const user = JSON.parse(sessionStorage.getItem('token') || '{}')
 const noUsername = user.noUsername
 const noId = user.noId
 const view = ref(1)
+const dialogVisible = ref(false)
+function determine() {
+  sessionStorage.removeItem('token')
+  router.push('/')
+}
 </script>
 <template>
   <el-container>
     <el-header>
-      <el-row style="margin-top: 20px;">
+      <el-card style="margin-top: 20px;">
         <div style="width: 1000px;padding: 20px " class="namespace">
           <div>
             <div style="display: block">
@@ -42,9 +49,9 @@ const view = ref(1)
             <el-divider></el-divider>
           </div>
         </div>
-      </el-row>
+      </el-card>
     </el-header>
-    <el-container style="margin-top: 100px">
+    <el-container style="margin-top: 150px">
       <el-aside>
         <el-col :span="20">
           <h5 class="mb-2">个人中心</h5>
@@ -75,14 +82,14 @@ const view = ref(1)
               </el-icon>
               <span>我的收藏</span>
             </el-menu-item>
-            <el-menu-item index="4">
+            <el-menu-item index="4" @click="view=4">
               <el-icon>
                 <setting/>
               </el-icon>
               <span>编辑资料</span>
             </el-menu-item>
             <el-divider/>
-            <el-menu-item index="5">
+            <el-menu-item index="5" @click="dialogVisible = true">
               <el-icon>
                 <setting/>
               </el-icon>
@@ -92,10 +99,23 @@ const view = ref(1)
         </el-col>
       </el-aside>
       <el-main>
+        <el-dialog
+          v-model="dialogVisible"
+          title="提示"
+          width="30%"
+          :close-on-click-modal="false"
+        >
+          <span>确定退出登录？</span>
+          <span slot="footer" class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary" @click="dialogVisible = false;determine()">确 定</el-button>
+          </span>
+        </el-dialog>
         <el-card>
           <MyArticle v-if="view===1"/>
           <MyComment v-if="view===2"/>
           <MyFavorite v-if="view===3"/>
+          <MyAccount v-if="view===4"/>
         </el-card>
       </el-main>
     </el-container>

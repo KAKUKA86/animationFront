@@ -13,26 +13,19 @@
         <router-link to="/"><img src="../assets/image/miHoYo_Game.2457753.png" style="height: 60px" alt="Logo">
         </router-link>
       </el-menu-item>
-      <el-menu-item index="1">Processing Center</el-menu-item>
-      <el-sub-menu index="2">
-        <template #title>Workspace</template>
-        <el-menu-item index="2-1">item one</el-menu-item>
-        <el-menu-item index="2-2">item two</el-menu-item>
-        <el-menu-item index="2-3">item three</el-menu-item>
-        <el-sub-menu index="2-4">
-          <template #title>item four</template>
-          <el-menu-item index="2-4-1">item one</el-menu-item>
-          <el-menu-item index="2-4-2">item two</el-menu-item>
-          <el-menu-item index="2-4-3">item three</el-menu-item>
-        </el-sub-menu>
+      <el-sub-menu index="1">
+        <template #title>工作域</template>
+        <el-menu-item index="1-1">
+          <router-link to="/workplace" style="color: white;">后台管理页面</router-link>
+        </el-menu-item>
       </el-sub-menu>
-      <el-menu-item index="3">
+      <el-menu-item index="2">
         <router-link to="/register">注册</router-link>
       </el-menu-item>
-      <el-menu-item index="4">
+      <el-menu-item index="3">
         <router-link to="/login">登录</router-link>
       </el-menu-item>
-      <el-menu-item index="5">
+      <el-menu-item index="4">
         <router-link to="/center">个人中心</router-link>
       </el-menu-item>
     </el-menu>
@@ -50,5 +43,7 @@ let handleSelect = (key: string, keyPath: string[]) => {
 </script>
 
 <style scoped>
-
+a.router-link-active, a.router-link-exact-active, a.router-link{
+  text-decoration: none;
+}
 </style>

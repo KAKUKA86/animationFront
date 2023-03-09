@@ -4,7 +4,7 @@
       :data="articleStore.articleList"
       style="width: 100%"
       :row-class-name="tableRowClassName"
-      height="250"
+      height="400"
   >
     <el-table-column prop="arId" label="文章编号"/>
     <el-table-column prop="paId" label="分区">

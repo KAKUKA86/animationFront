@@ -13,7 +13,7 @@ export default defineConfig({
     }),
     Components({
       resolvers: [ElementPlusResolver()],
-    }),2
+    }),
   ],
   server:{
     port:1145

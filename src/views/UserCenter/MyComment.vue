@@ -2,7 +2,7 @@
   <el-table
       :data="commentStore.commentList"
       style="width: 100%"
-      height="300"
+      height="400"
   >
     <el-table-column prop="coId" label="评论编号"/>
     <el-table-column prop="arId" label="文章编号"/>

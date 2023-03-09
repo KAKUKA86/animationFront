@@ -7,7 +7,7 @@ import {ElMessage} from "element-plus";
 import {
   Star,
 } from '@element-plus/icons-vue'
-import {reactive} from "vue";
+import {reactive, ref} from "vue";
 
 const route = useRoute()
 const articleStore = useArticleStore()
@@ -55,13 +55,14 @@ function submitComment() {
     });
   }
 }
+
 let isFavorite = false
 const data = reactive({
   isFavorite: false,
 })
 const toggleFavorite = () => {
   if (data.isFavorite) {
-    axios.post('http://localhost:8088/noUser/delFavorite',
+    axios.post('http://localhost:8088/noUser/delFavoriteByNoIdAndArtId',
         {noId: noId, arId: arId}, {responseType: 'json'})
         .then(response => {
           console.log(response.data)
@@ -80,17 +81,64 @@ const toggleFavorite = () => {
     });
   }
 }
+
+const dialogFormVisible = ref(false)
+const formLabelWidth = '140px'
+
+function submitReport(){
+  console.log("举报窗口")
+  const data = {
+    noId: noId,
+    arId: arId,
+    reContent: form.reason
+  }
+  if (form.reason == null) {
+    ElMessage.error('举报内容不能为空')
+    return
+  } else if (form.reason.length > 100) {
+    ElMessage.error('举报内容不能超过100字')
+    return
+  } else if (form.reason.length < 1) {
+    ElMessage.error('举报内容不能少于1字')
+    return
+  }
+  axios.post('http://localhost:8088/noUser/addReport', data, {responseType: 'json'})
+      .then(response => {
+        console.log(response.data)
+        ElMessage.success('举报成功')
+      }).catch(error => {
+    console.log(error);
+  });
+}
+const form = reactive({
+  reason: '',
+})
 </script>
 <template>
   <el-card><h2>文章标题：{{ articleStore.article.arTitle }}</h2>
     <h1>test</h1>
-
-      <button :class="{'favorite-button' : true,'is-favorite' : isFavorite}" @click="toggleFavorite" type="button">{{isFavorite ? '取消收藏' : '收藏'}}</button>
-
+    <el-button :class="{'favorite-button' : true,'is-favorite' : isFavorite}" @click="toggleFavorite" type="button">
+      {{ isFavorite ? '取消收藏' : '收藏' }}
+    </el-button>
+    <el-button type="warning" text @click="dialogFormVisible = true">举报</el-button>
+    <el-dialog v-model="dialogFormVisible" title="举报窗">
+      <el-form :model="form" label-width="80px">
+        <el-form-item label="举报原因" :label-width="formLabelWidth">
+          <el-input type="textarea" v-model="form.reason" placeholder="请输入举报原因"></el-input>
+        </el-form-item>
+      </el-form>
+      <template #footer>
+      <span class="dialog-footer">
+        <el-button @click="dialogFormVisible = false">取消</el-button>
+        <el-button type="primary" @click="submitReport();dialogFormVisible = false">
+          确认
+        </el-button>
+      </span>
+      </template>
+    </el-dialog>
     <div>以下是内容
       <div v-html="articleStore.article.arContent"></div>
     </div>
-
     <ul>
       <li>用户评论</li>
       <li v-for="(comment, index) in commentStore.commentList" :key="index">
@@ -98,7 +146,6 @@ const toggleFavorite = () => {
         <div>{{ comment.coContent }}</div>
       </li>
     </ul>
-
     <el-form @submit.prevent="submitComment">
       <el-input v-model="commentStore.comment.coContent" type="textarea" placeholder="请输入评论内容"></el-input>
       <el-button type="primary" native-type="submit">提交评论</el-button>
@@ -106,16 +153,32 @@ const toggleFavorite = () => {
   </el-card>
 </template>
 <style >
-  .favorite-button {
-    display: inline-block;
-    padding: 5px 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    cursor: pointer;
-  }
+.favorite-button {
+  display: inline-block;
+  padding: 5px 10px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  cursor: pointer;
+}
 
-  .is-favorite {
-    color: #ff9900;
-    border-color: #ff9900;
-  }
+.is-favorite {
+  color: #ff9900;
+  border-color: #ff9900;
+}
+
+.el-button--text {
+  margin-right: 15px;
+}
+
+.el-select {
+  width: 300px;
+}
+
+.el-input {
+  width: 300px;
+}
+
+.dialog-footer button:first-child {
+  margin-right: 10px;
+}
 </style>

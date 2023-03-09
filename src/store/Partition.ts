@@ -2,7 +2,8 @@ import {defineStore} from "pinia";
 
 interface articleInfo {
     paId: number,
-    paName: string
+    paName: string,
+    paArticleCount: number,
 }
 
 interface State {

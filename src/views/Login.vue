@@ -21,7 +21,7 @@
 
 <script lang="ts">
 import {defineComponent} from 'vue';
-import {ElForm, ElFormItem, ElInput, ElButton,} from 'element-plus';
+import {ElForm, ElFormItem, ElInput, ElButton, ElMessage,} from 'element-plus';
 import axios from "axios";
 import MyComponent from "../utils/Login";
 import router from "../router";
@@ -58,7 +58,7 @@ export default defineComponent({
               .then(res => {
                 console.log(res.data.code)
                 if (res.data.code === 200) {
-                  (this as unknown as MyComponent).$message.success(res.data.message);
+                  ElMessage.success(res.data.message);
                   const token = res.data.user
                   const tokenStr = JSON.stringify(token)
                   sessionStorage.setItem('token', tokenStr)

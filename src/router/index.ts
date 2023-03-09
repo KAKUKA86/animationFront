@@ -1,9 +1,5 @@
 import {createRouter, createWebHistory, RouteRecordRaw} from "vue-router";
-import {useArticleStore} from "../store/Article";
 import {ElMessage} from "element-plus";
-
-
-
 
 
 const routes: Array<RouteRecordRaw> = [
@@ -81,8 +77,89 @@ const routes: Array<RouteRecordRaw> = [
                 next("/login");
             }
         }
+    }, {
+        path: "/workplace",
+        name: "workplace",// @ts-ignore
+        component: () => import("../views/Controller/Workplace.vue"),
+        beforeEnter: (to, from, next) => {
+            const token = JSON.parse(sessionStorage.getItem("token") || "{}").acode;
+            if (token === 3) {
+                ElMessage.error("非法访问");
+                next("/");
+            } else {
+                next();
+            }
+        }
+    }, {
+        path: "/adminCenter",
+        name: "adminCenter",
+        component: () => import("../views/AdminCenter/AdminCenter.vue"),
+        beforeEnter: (to, from, next) => {
+            const token = JSON.parse(sessionStorage.getItem("token") || "{}").acode;
+            if (token != 1) {
+                ElMessage.error("非法访问");
+                next("/");
+            } else {
+                next();
+            }
+        }
+
+    }, {
+        path: "/partition",
+        name: "adminCenterPartition",// @ts-ignore
+        component: () => import("../views/AdminCenter/PartitionControl.vue"),
+        beforeEnter: (to, from, next) => {
+            const token = JSON.parse(sessionStorage.getItem("token") || "{}").acode;
+            if (token != 1) {
+                ElMessage.error("非法访问");
+                next("/");
+            } else {
+                next();
+            }
+        }
+    }, {
+        path: "/lexicon",
+        name: "adminCenterLexicon",// @ts-ignore
+        component: () => import("../views/AdminCenter/LexiconControl.vue"),
+        beforeEnter: (to, from, next) => {
+            const token = JSON.parse(sessionStorage.getItem("token") || "{}").acode;
+            if (token != 1) {
+                ElMessage.error("非法访问");
+                next("/");
+            } else {
+                next();
+            }
+        }
+    }, {
+        path: "/announcement",
+        name: "adminCenterAnnouncement",// @ts-ignore
+        component: () => import("../views/AdminCenter/AnnouncementControl.vue"),
+        beforeEnter: (to, from, next) => {
+            const token = JSON.parse(sessionStorage.getItem("token") || "{}").acode;
+            if (token != 1) {
+                ElMessage.error("非法访问");
+                next("/");
+            } else {
+                next();
+            }
+        }
+    },{
+        path: "/adAuditor",
+        name: "adminCenterAuditor",// @ts-ignore
+        component: () => import("../views/AdminCenter/AuditorControl.vue"),
+        beforeEnter: (to, from, next) => {
+            const token = JSON.parse(sessionStorage.getItem("token") || "{}").acode;
+            if (token != 1) {
+                ElMessage.error("非法访问");
+                next("/");
+            } else {
+                next();
+            }
+        }
     }
+
 ]
+
 const router = createRouter({
     history: createWebHistory(),
     routes

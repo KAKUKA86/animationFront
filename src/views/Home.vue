@@ -3,7 +3,6 @@ import {useArticleStore} from "../store/Article"
 import axios from 'axios';
 import {toRaw} from "vue";
 import router from "../router";
-
 const articleStore = useArticleStore()
 const articles = toRaw(articleStore.articleList)
 
@@ -21,23 +20,29 @@ function addArticle() {
 
 const normalUser = JSON.parse(sessionStorage.getItem('token') || '{}')
 const user = normalUser.noUsername
-console.log(articles)
+console.log("打印Token:" + normalUser.aCode)
 </script>
 <template>
   <el-main>
     <el-container>
       <!-- 文章列表组件 -->
-      <div><h3>目前用户为：{{ user }}</h3></div>
-      <br>
-      <h2>文章列表</h2>
-      <ul>
-        <li v-for="(article, index) in toRaw(articleStore.articleList)" :key="index">
-          <router-link :to="{name: 'article', params: {id: article.arId}}">
-            {{ article.arTitle }} ({{ article.arTime }})
-          </router-link>
-        </li>
-      </ul>
+      <el-card>
+        <div>
+          <h3 v-if="user != null">目前用户为：{{ user }}</h3>
+          <h3 v-if="user == null">游客您好</h3>
+        </div>
+        <br>
+        <h2>文章列表</h2>
+        <ul>
+          <li v-for="(article, index) in toRaw(articleStore.articleList)" :key="index">
+            <router-link :to="{name: 'article', params: {id: article.arId}}">
+              {{ article.arTitle }} ({{ article.arTime }})
+            </router-link>
 
+          </li>
+        </ul>
+
+      </el-card>
       <el-aside>
         <div>
           <el-button type="primary" @click="addArticle()">
