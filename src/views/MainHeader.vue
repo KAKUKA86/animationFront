@@ -1,5 +1,5 @@
 <template>
-  <el-header style="padding: 0">
+  <el-header class="fixed-header">
     <el-menu
         :default-active="activeIndex"
         class="el-menu-demo"
@@ -45,5 +45,13 @@ let handleSelect = (key: string, keyPath: string[]) => {
 <style scoped>
 a.router-link-active, a.router-link-exact-active, a.router-link{
   text-decoration: none;
+}
+.fixed-header{
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  z-index: 999;
+  padding: 0;
 }
 </style>

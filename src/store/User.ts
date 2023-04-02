@@ -7,6 +7,8 @@ interface userInfo {
     noGender: string,
     noBirthday: Date,
     noEmail: string,
+    noUserStatus: number,
+    noReportCount: number,
     aCode: number
 }
 

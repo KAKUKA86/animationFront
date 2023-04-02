@@ -143,13 +143,69 @@ const routes: Array<RouteRecordRaw> = [
                 next();
             }
         }
-    },{
+    }, {
         path: "/adAuditor",
         name: "adminCenterAuditor",// @ts-ignore
         component: () => import("../views/AdminCenter/AuditorControl.vue"),
         beforeEnter: (to, from, next) => {
             const token = JSON.parse(sessionStorage.getItem("token") || "{}").acode;
             if (token != 1) {
+                ElMessage.error("非法访问");
+                next("/");
+            } else {
+                next();
+            }
+        }
+    }, {
+        path: "/audiCenter",
+        name: "audiCenter",// @ts-ignore
+        component: () => import("../views/AudiCenter/AudiCenter.vue"),
+        beforeEnter: (to, from, next) => {
+            const token = JSON.parse(sessionStorage.getItem("token") || "{}").acode;
+            if (token != 2) {
+                ElMessage.error("非法访问");
+                next("/");
+            } else {
+                next();
+            }
+        }
+    }, {
+        path: "/audiArticle",
+        name: "audiArticle",// @ts-ignore
+        component: () => import("../views/AudiCenter/AudiArticle.vue"),
+        beforeEnter: (to, from, next) => {
+            const token = JSON.parse(sessionStorage.getItem("token") || "{}").acode;
+            if (token != 2) {
+                ElMessage.error("非法访问");
+                next("/");
+            } else {
+                next();
+            }
+        }
+    }, {
+        path: "/audiArticle/articleDetail",
+        name: "audiArticleDetail",// @ts-ignore
+        component: () => import("../views/AudiCenter/ArticleDetail.vue"),
+        props: true,
+        beforeEnter: (to, from, next) => {
+            const token = JSON.parse(sessionStorage.getItem("token") || "{}").acode;
+            if (token != 2) {
+                ElMessage.error("非法访问");
+                next("/");
+            } else {
+                next();
+            }
+        }
+    }, {
+        /**
+         * 审核用户
+         */
+        path: "/audiUser",
+        name: "audiUser",
+        component: () => import("../views/AudiCenter/AudiUser.vue"),
+        beforeEnter: (to, from, next) => {
+            const token = JSON.parse(sessionStorage.getItem("token") || "{}").acode;
+            if (token != 2) {
                 ElMessage.error("非法访问");
                 next("/");
             } else {

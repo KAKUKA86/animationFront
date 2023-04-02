@@ -1,108 +1,75 @@
 <template>
-  <div class="login-container">
-    <div class="login-box">
-      <div class="login-header">
-        <h1>登录</h1>
-      </div>
-      <el-form ref="form" :model="form" :rules="rules" label-position="left" label-width="80px" class="login-form">
-        <el-form-item label="用户名" prop="username">
-          <el-input v-model="form.username" placeholder="请输入用户名"></el-input>
-        </el-form-item>
-        <el-form-item label="密码" prop="password">
-          <el-input v-model="form.password" type="password" placeholder="请输入密码"></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="primary" class="login-button" @click="handleLogin">登录</el-button>
-        </el-form-item>
-      </el-form>
-    </div>
-  </div>
+  <el-card>
+    <h2>登录</h2>
+    <el-form
+        ref="loginFormRef"
+        :model="form"
+        :rules="rules"
+        label-width="80px"
+        class="login-form"
+        status-icon
+    >
+      <el-form-item label="用户名" prop="noUsername">
+        <el-input v-model="form.noUsername" placeholder="请输入用户名"/>
+      </el-form-item>
+      <el-form-item label="密码" prop="noUserPassword">
+        <el-input v-model="form.noUserPassword" placeholder="请输入密码" type="password"/>
+      </el-form-item>
+      <el-form-item>
+        <el-button type="primary" @click="handleLogin(ruleFormRef)">登录</el-button>
+      </el-form-item>
+    </el-form>
+  </el-card>
 </template>
 
-<script lang="ts">
-import {defineComponent} from 'vue';
-import {ElForm, ElFormItem, ElInput, ElButton, ElMessage,} from 'element-plus';
+<script lang="ts" setup>
+import {reactive, ref} from 'vue';
+import {ElForm, ElFormItem, ElInput, ElButton, ElMessage, FormRules, FormInstance} from 'element-plus';
 import axios from "axios";
-import MyComponent from "../utils/Login";
 import router from "../router";
 
-export default defineComponent({
-  components: {
-    ElForm,
-    ElFormItem,
-    ElInput,
-    ElButton,
-  },
-  data() {
-    return {
-      form: {
-        username: '',
-        password: '',
-      },
-      rules: {
-        username: [{required: true, message: '请输入用户名', trigger: 'blur'}],
-        password: [{required: true, message: '请输入密码', trigger: 'blur'}],
-      },
-    };
-  },
-  methods: {
-    handleLogin() {
-      (this.$refs.form as any).validate((valid: boolean) => {
-        if (valid) {
-          const url = 'http://localhost:8088/noUser/login';
-          const params = {
-            noUsername: this.form.username,
-            noUserPassword: this.form.password,
-          };
-          axios.post(url, params)
-              .then(res => {
-                console.log(res.data.code)
-                if (res.data.code === 200) {
-                  ElMessage.success(res.data.message);
-                  const token = res.data.user
-                  const tokenStr = JSON.stringify(token)
-                  sessionStorage.setItem('token', tokenStr)
-                  router.push('/');
-                } else {
-                  (this as unknown as MyComponent).$message.error(res.data.message);
-                }
-              });
-        }
-      })
-    },
-  },
+const validateNoUsername = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('请输入用户名'));
+  } else {
+    console.log(value)
+    callback();
+  }
+};
+const validateNoUserPassword = (rule: any, value: any, callback: any) => {
+  if (value === '') {
+    callback(new Error('请输入密码'));
+  }
+};
+const ruleFormRef = ref<FormInstance>()
+const form = reactive({
+  noUsername: '',
+  noUserPassword: ''
 });
+const rules = reactive<FormRules>({
+  noUsername: [{validator: validateNoUsername, trigger: 'blur'}],
+  noUserPassword: [{validator: validateNoUserPassword, trigger: 'blur'}]
+})
+
+
+function handleLogin() {
+  axios.post('http://localhost:8088/noUser/login', form, {responseType: 'json'})
+      .then(response => {
+        console.log(response.data)
+        if (response.data.code === 200) {
+          ElMessage.success('登录成功');
+          sessionStorage.setItem('token', JSON.stringify(response.data.user))
+          router.push({name: 'home'})
+        } else {
+          ElMessage.error(response.data.message);
+        }
+      }).catch(error => {
+    console.log(error);
+  });
+}
+
 </script>
 
-<style scoped>
-.login-container {
-  padding-top: 20px;
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: 100%;
-  background-color: #f7f7f7;
-  margin: auto;
-}
+<style>
 
-.login-box {
-  width: 400px;
-  background-color: #fff;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
-}
-
-.login-header {
-  padding: 20px;
-  font-size: 24px;
-  font-weight: bold;
-  text-align: center;
-}
-
-.login-form {
-  padding: 20px;
-}
-
-.login-button {
-  width: 100%;
-}
 </style>

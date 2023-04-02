@@ -31,27 +31,41 @@ function handleLogin(form: { username: string | null; password: string | null; c
     ElMessage.error('密码不能少于1字')
     return
   }
-  if (form.captcha == "管理员") {
-    ElMessage.success('以管理员身份登录')
+  if (form.captcha === "管理员") {
+    ElMessage.warning('以管理员身份登录')
     axios.post('http://localhost:8088/adUser/login',
         {adUsername: form.username, adUserPassword: form.password}, {responseType: 'json'})
         .then(response => {
           console.log(response.data)
           sessionStorage.setItem('token', JSON.stringify(response.data.adminUser))
+          console.log("寄：" + JSON.parse(sessionStorage.getItem('token') || '{}').adId)
           router.push('/adminCenter')
         }).catch(error => {
       console.log(error);
+      sessionStorage.clear()
+      ElMessage.error('用户名或密码不正确')
+      return
     })
-  } else if (form.captcha == '审核员') {
-    ElMessage.success('以审核员身份登录')
-    axios.post('http://localhost:8088/auditor/login',
-        {username: form.username, password: form.password}, {responseType: 'json'})
+  } else if (form.captcha === '审核员') {
+    ElMessage.warning('以审核员身份登录')
+    axios.post('http://localhost:8088/auUser/login',
+        {auUsername: form.username, auUserPassword: form.password}, {responseType: 'json'})
         .then(response => {
+          console.log(form.username)
+          console.log(form.password)
           console.log(response.data)
+          console.log(response.data.audiUser)
+          sessionStorage.setItem('token', JSON.stringify(response.data.audiUser))
+          console.log("寄" + JSON.parse(sessionStorage.getItem('token') || '{}').acode)
+          router.push('/audiCenter')
+
         }).catch(error => {
       console.log(error);
+      sessionStorage.clear()
+      ElMessage.error('用户名或密码不正确')
+      return
     })
-  }else {
+  } else {
     ElMessage.error('发生意外错误，用户名或密码不正确')
   }
 }
@@ -60,7 +74,7 @@ function roleText(form: { captcha: string; }) {
   if (form.captcha == '1') {
     return '管理员'
   } else if (form.captcha == '2') {
-    return '普通用户'
+    return '审核员'
   } else {
     return form.captcha
   }

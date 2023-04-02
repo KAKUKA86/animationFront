@@ -13,7 +13,11 @@
       </template>
     </el-table-column>
     <el-table-column prop="arTitle" label="文章标题"/>
-    <el-table-column prop="arTime" label="文章上传时间"/>
+    <el-table-column prop="arTime" label="文章上传时间">
+      <template #default="{row}">
+        {{ setTime(row.arTime) }}
+      </template>
+    </el-table-column>
     <el-table-column prop="arStatus" label="文章审核状态">
       <template #default="scope">
         <el-tag v-if="scope.row.arStatus === 0" type="info">待审核</el-tag>
@@ -34,7 +38,6 @@
 <script lang="ts" setup>
 import axios from "axios";
 import {useArticleStore} from "../../store/Article";
-import {reactive, ref, toRaw} from "vue";
 import {usePartitionStore} from "../../store/Partition";
 import router from "../../router";
 import {ElMessage} from "element-plus";
@@ -105,6 +108,16 @@ function delArticle(arId: number) {
         console.log(error);
       }
   )
+}
+function setTime(time: any) {
+  let date = new Date(time)
+  let year = date.getFullYear()
+  let month = date.getMonth() + 1
+  let day = date.getDate()
+  let hour = date.getHours()
+  let minute = date.getMinutes()
+  let second = date.getSeconds()
+  return year + '-' + month + '-' + day + ' ' + hour + ':' + minute + ':' + second
 }
 </script>
 

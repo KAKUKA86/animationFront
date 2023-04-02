@@ -7,6 +7,7 @@ interface articleInfo {
     arTitle: string,
     arContent: string,
     arTime: Date,
+    arLike: number,
     arView: number,
     arStatus: number
     auId: number

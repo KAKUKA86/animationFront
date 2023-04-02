@@ -8,6 +8,7 @@ import router from "../router";
 const form = reactive({
   noUsername: '',
   noUserPassword: '',
+  isUserPassword: '',
   noGender: '',
   noBirthday: '',
   noEmail: ''
@@ -17,7 +18,28 @@ function submitForm(form: any) {
   const url = 'http://localhost:8088/noUser/signIn';
   const noBirthday = new Date().setTime(form.noBirthday)
   console.log(typeof noBirthday)
-
+  if (form.noUsername === '') {
+    ElMessage.error('用户名不能为空')
+    return
+  } else if (form.noUserPassword === '') {
+    ElMessage.error('密码不能为空')
+    return
+  } else if (form.isUserPassword === '') {
+    ElMessage.error('确认密码不能为空')
+    return
+  } else if (form.noGender === '') {
+    ElMessage.error('性别不能为空')
+    return
+  } else if (form.noBirthday === '') {
+    ElMessage.error('生日不能为空')
+    return
+  } else if (form.noEmail === '') {
+    ElMessage.error('邮箱不能为空')
+    return
+  } else if (form.noUserPassword !== form.isUserPassword) {
+    ElMessage.error('两次密码不一致')
+    return
+  }
   axios.post(url,{
     noUsername: form.noUsername,
     noUserPassword: form.noUserPassword,
@@ -46,10 +68,10 @@ function submitForm(form: any) {
         <el-input v-model="form.noUsername"/>
       </el-form-item>
       <el-form-item label="密码">
-        <el-input v-model="form.noUserPassword"/>
+        <el-input v-model="form.noUserPassword" type="password"/>
       </el-form-item>
       <el-form-item label="确认密码">
-        <el-input v-model="form.noUserPassword"/>
+        <el-input v-model="form.isUserPassword" type="password"/>
       </el-form-item>
       <el-form-item label="性别">
         <el-radio-group v-model="form.noGender">
