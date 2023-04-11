@@ -142,6 +142,7 @@ const handlePass = (arId: number) => {
       }
   )
 }
+
 const handleNoPass = (arId: number) =>{
   axios.post('http://localhost:8088/auUser/updAudArticle', {
     auId: auId,
@@ -163,6 +164,7 @@ const goToArticle = (arId: number) => {
   console.log("打印"+arId)
   router.push({name:'audiArticleDetail', query:{arId:arId}})
 }
+
 function getTime (time: any) {
   const date = new Date(time)
   const Y = date.getFullYear() + '-'

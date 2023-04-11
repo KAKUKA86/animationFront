@@ -6,13 +6,14 @@ import {useRoute} from "vue-router";
 import {ElMessage} from "element-plus";
 import {reactive, ref} from "vue";
 import {
-  Watermelon,
-  Pear
+  Watermelon
 } from "@element-plus/icons-vue";
+import {useViewStore} from "../store/View";
 
 const route = useRoute()
 const articleStore = useArticleStore()
 const commentStore = useCommentStore()
+const viewStore = useViewStore()
 const arId = route.params.id;
 const user = JSON.parse(sessionStorage.getItem('token') || '{}');
 const noId = user.noId;
@@ -193,6 +194,45 @@ function actionLike() {
       }
   );
 }
+
+/**
+ * 浏览量
+ * 1.创建一个浏览表，存储用户ID文章ID浏览时间。
+ * 2.用户点击文章，用用户session中的用户ID和文章ID去查询流览表，若浏览时间间隔小于一天，则不增加浏览量，否则增加浏览量
+ * 3.将用户ID文章ID浏览时间存入浏览表
+ * 4.将浏览量存入文章表
+ */
+/**
+ * 浏览量功能实现
+ */
+
+const nowTime = new Date().getTime()
+console.log("现在时间为" + nowTime)
+if (sessionStorage.getItem('token') != null) {
+  axios.post('http://localhost:8088/queViewByNoIdAndArId', {arId: arId, noId: noId}).then(response => {
+    //如果数据库中没有数据或者时间间隔大于一天
+    if (response.data.view === null || nowTime - new Date(response?.data?.view?.viTime).getTime() > 86400000) {
+      console.log("进入IF语句")
+      // 将用户ID文章ID浏览时间存入浏览表
+      axios.post('http://localhost:8088/addView', {arId: arId, noId: noId}).then(response => {
+        console.log(response.data)
+        //将浏览量存入文章表
+        axios.post('http://localhost:8088/addViewCount', {arId: arId}).then(response => {
+          console.log(response.data)
+        }).catch(error => {
+          console.log(error);
+        });
+      }).catch(error => {
+        console.log(error);
+      });
+      console.log("浏览量为" + articleStore.article.arView)
+      articleStore.article.arView = articleStore.article.arView + 1
+    }
+  }).catch(error => {
+    console.log(error);
+  })
+}
+
 
 </script>
 <template>

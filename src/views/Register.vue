@@ -33,7 +33,11 @@ function submitForm(form: any) {
   } else if (form.noBirthday === '') {
     ElMessage.error('生日不能为空')
     return
-  } else if (form.noEmail === '') {
+  } else if (form.noBirthday > Date.parse(new Date().toString())){
+    ElMessage.error('生日不能大于当前时间')
+    return
+  }
+  else if (form.noEmail === '') {
     ElMessage.error('邮箱不能为空')
     return
   } else if (form.noUserPassword !== form.isUserPassword) {
@@ -58,6 +62,14 @@ function submitForm(form: any) {
           }
       )
 
+}
+function resetForm(form : any) {
+  form.noUsername = '';
+  form.noUserPassword = '';
+  form.isUserPassword = '';
+  form.noGender = '';
+  form.noBirthday = '';
+  form.noEmail = '';
 }
 </script>
 <template>

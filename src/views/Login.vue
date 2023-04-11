@@ -16,7 +16,7 @@
         <el-input v-model="form.noUserPassword" placeholder="请输入密码" type="password"/>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="handleLogin(ruleFormRef)">登录</el-button>
+        <el-button type="primary" @click="handleLogin()">登录</el-button>
       </el-form-item>
     </el-form>
   </el-card>
@@ -31,7 +31,10 @@ import router from "../router";
 const validateNoUsername = (rule: any, value: any, callback: any) => {
   if (value === '') {
     callback(new Error('请输入用户名'));
-  } else {
+  } else if(value.length < 4) {
+    console.log(value)
+    callback(new Error('用户名不能少于4位'));
+  }else {
     console.log(value)
     callback();
   }
@@ -39,9 +42,12 @@ const validateNoUsername = (rule: any, value: any, callback: any) => {
 const validateNoUserPassword = (rule: any, value: any, callback: any) => {
   if (value === '') {
     callback(new Error('请输入密码'));
+  } else if (value.length < 4 || value.length > 16){
+    callback(new Error('密码不能少于4位且不能大于16位'));
+  } else {
+    callback();
   }
 };
-const ruleFormRef = ref<FormInstance>()
 const form = reactive({
   noUsername: '',
   noUserPassword: ''
